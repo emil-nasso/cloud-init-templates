@@ -1,0 +1,14 @@
+runcmd:
+ - apt update
+ - apt install -y apache2 php php-mysql mysql-server
+ - wget http://wordpress.org/latest.tar.gz -P /tmp/
+ - tar -zxf /tmp/latest.tar.gz -C /var/www/
+ - mysql -e "create database wordpress; create user 'wpuser'@'localhost' identified by 'changemetoo'; grant all privileges on wordpress.* to 'wpuser'@'localhost'; flush privileges;"
+ - mysqladmin -u root password 'changeme'
+ - sed -i 's#/var/www/html#/var/www/wordpress#' /etc/apache2/sites-enabled/000-default.conf
+ - mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php
+ - sed -i 's#database_name_here#wordpress#' /var/www/wordpress/wp-config.php
+ - sed -i 's#username_here#wpuser#' /var/www/wordpress/wp-config.php
+ - sed -i 's#password_here#changemetoo#' /var/www/wordpress/wp-config.php
+ - systemctl restart apache2
+ 
